@@ -1,4 +1,4 @@
-### start server
+### start gRPC server
 ```
 go run server/server.go
 ```
