@@ -2,7 +2,7 @@
 syntax = "proto3";
 package pancake;
 
-option go_package = "backend/grpc/api";
+option go_package = "backend/api";
 
 import "google/protobuf/timestamp.proto";
 
