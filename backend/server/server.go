@@ -7,11 +7,10 @@ import (
 	"os"
 	"os/signal"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
-
 	"github.com/kousuketk/GogRPC/backend/api"
 	"github.com/kousuketk/GogRPC/backend/handler"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
