@@ -39,7 +39,7 @@ func main() {
 		grpc.UnaryInterceptor(
 			grpc_middleware.ChainUnaryServer(
 				grpc_zap.UnaryServerInterceptor(zapLogger),
-				grpc_auth.UnaryServerInterceptor(auth),
+				// grpc_auth.UnaryServerInterceptor(auth),
 			),
 		),
 	)
@@ -47,6 +47,10 @@ func main() {
 	api.RegisterPancakeBakerServiceServer(
 		server,
 		handler.NewBakerHandler(),
+	)
+	api.RegisterImageUploadServiceServer(
+		server,
+		handler.NewImageUploadHandler(),
 	)
 	reflection.Register(server)
 
