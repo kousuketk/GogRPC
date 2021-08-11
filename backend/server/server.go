@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -10,10 +11,14 @@ import (
 	"github.com/kousuketk/GogRPC/backend/api"
 	"github.com/kousuketk/GogRPC/backend/handler"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"go.uber.org/zap"
+
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 )
 
 func main() {
@@ -32,9 +37,13 @@ func main() {
 
 	server := grpc.NewServer(
 		grpc.UnaryInterceptor(
-			grpc_zap.UnaryServerInterceptor(zapLogger),
+			grpc_middleware.ChainUnaryServer(
+				grpc_zap.UnaryServerInterceptor(zapLogger),
+				grpc_auth.UnaryServerInterceptor(auth),
+			),
 		),
 	)
+
 	api.RegisterPancakeBakerServiceServer(
 		server,
 		handler.NewBakerHandler(),
@@ -51,4 +60,16 @@ func main() {
 	<-quit
 	log.Println("stopping gRPC server...")
 	server.GracefulStop()
+}
+
+func auth(ctx context.Context) (context.Context, error) {
+	token, err := grpc_auth.AuthFromMD(ctx, "bearer")
+	if err != nil {
+		return nil, err
+	}
+
+	if token != "sampleToken" {
+		return nil, grpc.Errorf(codes.Unauthenticated, "invalid bearer token")
+	}
+	return context.WithValue(ctx, "UserName", "sampleUserName"), nil
 }

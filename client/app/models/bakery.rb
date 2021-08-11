@@ -30,11 +30,15 @@ class Bakery
 		SPICY_CURRY       = "spicy_curry"
   end
 
+  def self.metadata
+    { authorization: 'bearer sampleToken' }
+  end
+
   def self.bake_pancake(menu)
     req = Pancake::BakeRequest.new({
       menu: pb_menu(menu),
     })
-    res = stub.bake(req)
+    res = stub.bake(req, metadata: metadata)
 
     {
       chef_name: res.pancake.chef_name,
