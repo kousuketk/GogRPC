@@ -21,7 +21,7 @@ module Client
     config.load_defaults 5.2
     config.autoloader = :classic
 
-    config.paths.add Rails.root.join('app', 'gen', 'api', 'pancake').to_s,
-    eager_load: true
+    config.paths.add Rails.root.join('app', 'gen', 'api', 'pancake').to_s, eager_load: true
+    config.paths.add Rails.root.join('app', 'gen', 'api', 'image_uploader').to_s, eager_load: true
   end
 end
